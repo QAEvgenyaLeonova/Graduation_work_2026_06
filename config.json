@@ -1,0 +1,5 @@
+{
+  "base_url": "https://www.chitai-gorod.ru",
+  "api_base_url": "https://www.chitai-gorod.ru/api",
+  "timeout": 15
+}
