@@ -50,12 +50,12 @@ class CatalogPage:
     CLEAR_CART = '//button[@data-testid-button-cart="clearAll"]'
     CHECKOUT_BUTTON = '//div[text()=" Оформить"]'
 
-    @allure.step("Открыть главную страницу")
+    @allure.step("Открыть главную страницу сайта Читай-город")
     def open_main(self) -> None:
         self.driver.get(self.MAIN_PAGE_URL)
         self._close_overlay()
 
-    @allure.step("Закрыть оверлей")
+    @allure.step("Закрыть всплывающее окно (оверлей/модальное окно)")
     def _close_overlay(self) -> None:
         try:
             overlays = [
@@ -76,7 +76,7 @@ class CatalogPage:
         except Exception:
             pass
 
-    @allure.step("Поиск по фразе: {phrase}")
+    @allure.step("Выполнить поиск по фразе: '{phrase}'")
     def search_by_phrase(self, phrase: str) -> bool:
         self._close_overlay()
         try:
@@ -91,12 +91,12 @@ class CatalogPage:
         except Exception as e:
             allure.attach(
                 self.driver.get_screenshot_as_png(),
-                name="search_error",
+                name="Ошибка при выполнении поиска",
                 attachment_type=allure.attachment_type.PNG,
             )
             return False
 
-    @allure.step("Ожидать загрузки результатов")
+    @allure.step("Ожидать загрузки результатов поиска")
     def _wait_for_results(self) -> None:
         try:
             self.wait.until(
@@ -108,7 +108,7 @@ class CatalogPage:
         except TimeoutException:
             pass
 
-    @allure.step("Получить названия книг")
+    @allure.step("Получить список названий книг из результатов поиска")
     def get_book_titles(self) -> list:
         try:
             elements = self.driver.find_elements(By.XPATH, self.BOOK_TITLE)
@@ -118,7 +118,7 @@ class CatalogPage:
         except NoSuchElementException:
             return []
 
-    @allure.step("Получить авторов книг")
+    @allure.step("Получить список авторов книг из результатов поиска")
     def get_book_authors(self) -> list:
         try:
             elements = self.driver.find_elements(By.XPATH, self.BOOK_AUTHOR)
@@ -128,7 +128,7 @@ class CatalogPage:
         except NoSuchElementException:
             return []
 
-    @allure.step("Получить количество результатов")
+    @allure.step("Получить количество найденных книг")
     def get_results_count(self) -> int:
         try:
             elements = self.driver.find_elements(By.XPATH, self.PRODUCT_CARD)
@@ -136,7 +136,7 @@ class CatalogPage:
         except:
             return 0
 
-    @allure.step("Проверить наличие сообщения об отсутствии результатов")
+    @allure.step("Проверить отображение сообщения 'ничего не нашлось'")
     def is_no_results(self) -> bool:
         try:
             element = self.driver.find_element(By.XPATH, self.NO_RESULTS)
@@ -144,19 +144,19 @@ class CatalogPage:
         except NoSuchElementException:
             return False
 
-    @allure.step("Проверить наличие поля поиска")
+    @allure.step("Проверить наличие поля поиска на странице")
     def is_search_input_present(self, timeout: int = 5) -> bool:
         return self._is_element_present(self.INPUT_SEARCH, timeout)
 
-    @allure.step("Проверить наличие кнопки поиска")
+    @allure.step("Проверить наличие кнопки поиска на странице")
     def is_search_button_present(self, timeout: int = 5) -> bool:
         return self._is_element_present(self.SEARCH_BUTTON, timeout)
 
-    @allure.step("Проверить наличие иконки корзины")
+    @allure.step("Проверить наличие иконки корзины на странице")
     def is_cart_button_present(self, timeout: int = 5) -> bool:
         return self._is_element_present(self.CART_BUTTON, timeout)
 
-    @allure.step("Проверить наличие кнопки 'Оформить'")
+    @allure.step("Проверить наличие кнопки 'Оформить' в корзине")
     def is_checkout_visible(self, timeout: int = 5) -> bool:
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -167,7 +167,7 @@ class CatalogPage:
         except TimeoutException:
             return False
 
-    @allure.step("Проверить, пуста ли корзина")
+    @allure.step("Проверить, что корзина пуста")
     def is_cart_empty(self) -> bool:
         try:
             self.wait.until(
@@ -178,7 +178,7 @@ class CatalogPage:
             items = self.driver.find_elements(By.XPATH, self.CART_ITEM)
             return len(items) == 0
 
-    @allure.step("Добавить первую книгу в корзину")
+    @allure.step("Добавить первую найденную книгу в корзину")
     def add_first_book_to_cart(self) -> bool:
         try:
             button = self.wait.until(

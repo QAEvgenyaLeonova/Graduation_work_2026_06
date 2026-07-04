@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 
 @pytest.fixture(scope="function")
 def browser(request):
+    """Фикстура для инициализации и завершения работы браузера"""
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -23,9 +24,10 @@ def browser(request):
 
 
 def pytest_addoption(parser):
+    """Добавление кастомной опции для запуска в headless режиме"""
     parser.addoption(
         "--headless",
         action="store_true",
         default=False,
-        help="Запуск в headless режиме",
+        help="Запуск в headless режиме (без графического интерфейса)",
     )
