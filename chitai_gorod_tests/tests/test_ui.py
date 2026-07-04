@@ -32,8 +32,16 @@ class TestSearchUI:
                 all_authors.extend(authors)
                 all_text = " ".join(titles + authors).lower()
 
-                for author in ["пушкин", "pushkin", "лермонтов", "lermontov", "толстой", "tolstoy", "достоевский",
-                               "dostoevsky"]:
+                for author in [
+                    "пушкин",
+                    "pushkin",
+                    "лермонтов",
+                    "lermontov",
+                    "толстой",
+                    "tolstoy",
+                    "достоевский",
+                    "dostoevsky",
+                ]:
                     if author in all_text:
                         found_author = True
                         break
@@ -42,18 +50,24 @@ class TestSearchUI:
                     break
 
         if not success:
-            pytest.skip("Не удалось выполнить поиск (возможно, сайт изменился или недоступен)")
+            pytest.skip(
+                "Не удалось выполнить поиск (возможно, сайт изменился)"
+            )
 
         if not found_author:
             if len(all_titles) > 0:
-                pytest.skip(f"Автор не найден в результатах. Найдено книг: {len(all_titles)}")
+                pytest.skip(
+                    f"Автор не найден в результатах. Найдено книг: {len(all_titles)}"
+                )
             else:
-                pytest.skip("Поиск не дал результатов (возможно, сайт изменился)")
+                pytest.skip(
+                    "Поиск не дал результатов (возможно, сайт изменился)"
+                )
 
         allure.attach(
             f"Найдено книг: {len(all_titles)}\nАвторы: {all_authors[:5]}",
             name="search_results",
-            attachment_type=allure.attachment_type.TEXT
+            attachment_type=allure.attachment_type.TEXT,
         )
 
     @allure.title("Поиск по латинице")
@@ -77,8 +91,11 @@ class TestSearchUI:
             pytest.skip(f"Не удалось выполнить поиск по фразе: {latin_phrase}")
 
         results = page.get_results_count()
-        allure.attach(f"Найдено результатов: {results}", name="results_count",
-                      attachment_type=allure.attachment_type.TEXT)
+        allure.attach(
+            f"Найдено результатов: {results}",
+            name="results_count",
+            attachment_type=allure.attachment_type.TEXT,
+        )
 
         if results == 0:
             pytest.skip("Поиск не дал результатов")
@@ -98,15 +115,20 @@ class TestSearchUI:
         results = page.get_results_count()
         no_results_msg = page.is_no_results()
 
-        allure.attach(f"Найдено: {results}, Сообщение: {no_results_msg}", name="search_result",
-                      attachment_type=allure.attachment_type.TEXT)
+        allure.attach(
+            f"Найдено: {results}, Сообщение: {no_results_msg}",
+            name="search_result",
+            attachment_type=allure.attachment_type.TEXT,
+        )
 
         if results > 0:
             titles = page.get_book_titles()
             all_text = " ".join(titles).lower()
             assert phrase not in all_text, "Найден запрос в результатах"
         else:
-            assert no_results_msg or results == 0, "Нет результатов и нет сообщения"
+            assert (
+                no_results_msg or results == 0
+            ), "Нет результатов и нет сообщения"
 
     @allure.title("Проверка отображения названий книг")
     @allure.severity(allure.severity_level.NORMAL)
@@ -128,7 +150,9 @@ class TestSearchUI:
                 break
 
         if not success:
-            pytest.skip("Не удалось выполнить поиск (возможно, сайт изменился)")
+            pytest.skip(
+                "Не удалось выполнить поиск (возможно, сайт изменился)"
+            )
 
         if len(titles) == 0:
             pytest.skip("Поиск не дал результатов (возможно, сайт изменился)")
@@ -139,7 +163,7 @@ class TestSearchUI:
         allure.attach(
             f"Найдено названий: {len(titles)}\nПримеры: {titles[:3]}",
             name="titles_found",
-            attachment_type=allure.attachment_type.TEXT
+            attachment_type=allure.attachment_type.TEXT,
         )
 
 
@@ -187,4 +211,6 @@ class TestElementsUI:
             pytest.skip("Не удалось выполнить поиск")
 
         current_url = browser.current_url
-        assert "search" in current_url.lower() or page.get_results_count() > 0, "Поиск не сработал"
+        assert (
+            "search" in current_url.lower() or page.get_results_count() > 0
+        ), "Поиск не сработал"

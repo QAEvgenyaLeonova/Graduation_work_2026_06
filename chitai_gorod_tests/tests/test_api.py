@@ -2,6 +2,7 @@ import allure
 import pytest
 import requests
 
+
 @allure.feature("API: Поиск книг")
 @pytest.mark.api
 class TestSearchAPI:
@@ -13,7 +14,12 @@ class TestSearchAPI:
         params = {"q": "Лермонтов"}
         try:
             response = requests.get(url, params=params, timeout=10)
-            assert response.status_code in [200, 403, 404, 429], f"Неожиданный статус: {response.status_code}"
+            assert response.status_code in [
+                200,
+                403,
+                404,
+                429,
+            ], f"Неожиданный статус: {response.status_code}"
         except requests.exceptions.ConnectionError:
             pytest.skip("API недоступен")
 
@@ -26,11 +32,14 @@ class TestSearchAPI:
             response = requests.get(url, params=params, timeout=10)
             if response.status_code == 200:
                 data = response.json()
-                assert "results" in data or "data" in data, "Нет поля с результатами"
+                assert (
+                    "results" in data or "data" in data
+                ), "Нет поля с результатами"
             else:
                 assert True, f"API вернул {response.status_code}"
         except requests.exceptions.ConnectionError:
             pytest.skip("API недоступен")
+
 
 @allure.feature("API: Корзина")
 @pytest.mark.api
@@ -42,7 +51,12 @@ class TestCartAPI:
         url = "https://www.chitai-gorod.ru/api/cart"
         try:
             response = requests.get(url, timeout=10)
-            assert response.status_code in [200, 401, 403, 404], f"Неожиданный статус: {response.status_code}"
+            assert response.status_code in [
+                200,
+                401,
+                403,
+                404,
+            ], f"Неожиданный статус: {response.status_code}"
         except requests.exceptions.ConnectionError:
             pytest.skip("API недоступен")
 
@@ -56,4 +70,3 @@ class TestCartAPI:
             assert response.headers is not None, "Нет заголовков ответа"
         except requests.exceptions.ConnectionError:
             pytest.skip("API недоступен")
-            
